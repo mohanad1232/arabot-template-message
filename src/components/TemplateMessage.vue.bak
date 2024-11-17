@@ -1,0 +1,201 @@
+<template>
+  <v-container>
+    <v-row>
+      <!-- Main form for creating the template -->
+      <v-col cols="8">
+        <v-card class="pa-4">
+          <!-- Template Name and Language -->
+          <v-text-field
+            label="Template Name"
+            v-model="template.name"
+            required
+          ></v-text-field>
+
+          <v-select
+            label="Language"
+            :items="languages"
+            v-model="template.language"
+          ></v-select>
+
+          <!-- Category Selection -->
+          <v-radio-group v-model="template.category" label="Category">
+            <v-radio label="Marketing" value="MARKETING"></v-radio>
+            <v-radio label="Utility" value="UTILITY"></v-radio>
+          </v-radio-group>
+
+          <!-- Header Section -->
+          <v-tabs v-model="headerTab" background-color="primary" dark>
+            <v-tab v-for="(option, index) in headerOptions" :key="index">
+              <v-icon left>{{ option.icon }}</v-icon>
+              {{ option.label }}
+            </v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="headerTab">
+            <v-tab-item v-if="headerTab === 0">
+              <p>No header content</p>
+            </v-tab-item>
+            <v-tab-item v-if="headerTab === 1">
+              <v-text-field
+                label="Header Text"
+                v-model="template.header.text"
+              ></v-text-field>
+            </v-tab-item>
+            <v-tab-item v-if="headerTab === 2">
+              <v-file-input
+                label="Upload Image"
+                accept="image/*"
+                @change="onImageSelected"
+              ></v-file-input>
+              <v-img
+                v-if="template.header.url"
+                :src="template.header.url"
+                max-width="100"
+                max-height="100"
+                class="mt-2"
+              ></v-img>
+            </v-tab-item>
+          </v-tabs-items>
+
+          <!-- Body Section -->
+          <v-textarea
+            label="Body Text"
+            v-model="template.body.text"
+            required
+          ></v-textarea>
+
+          <!-- Footer Section -->
+          <v-text-field
+            label="Footer Text"
+            v-model="template.footer.text"
+          ></v-text-field>
+
+          <!-- Buttons Section -->
+          <v-btn @click="addButton" class="mt-3">Add Button</v-btn>
+          <div v-for="(button, index) in template.buttons" :key="index" class="d-flex align-center my-2">
+            <v-select
+              v-model="button.type"
+              :items="buttonTypes"
+              label="Button Type"
+              class="mr-2"
+            ></v-select>
+            <v-text-field
+              label="Button Text"
+              v-model="button.text"
+              required
+              class="mr-2"
+            ></v-text-field>
+            <v-text-field
+              v-if="button.type === 'URL'"
+              label="Website URL"
+              v-model="button.value"
+              required
+              class="mr-2"
+            ></v-text-field>
+            <v-text-field
+              v-if="button.type === 'CALL'"
+              label="Phone Number"
+              v-model="button.value"
+              required
+              class="mr-2"
+            ></v-text-field>
+            <v-btn icon @click="removeButton(index)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </div>
+        </v-card>
+      </v-col>
+
+      <!-- Preview Section -->
+      <v-col cols="4">
+        <v-card class="pa-4">
+          <h3>Preview</h3>
+          <div class="preview">
+            <v-img
+              v-if="template.header.url"
+              :src="template.header.url"
+              max-width="100%"
+              class="mb-2"
+            ></v-img>
+            <h4>{{ template.header.text }}</h4>
+            <p>{{ template.body.text }}</p>
+            <small>{{ template.footer.text }}</small>
+            <div v-for="button in template.buttons" :key="button.text" class="d-flex align-center mt-1">
+              <v-btn
+                :href="button.type === 'URL' ? button.value : undefined"
+                v-if="button.type === 'URL'"
+                target="_blank"
+                icon
+              >
+                <v-icon left>mdi-web</v-icon>
+                {{ button.text }}
+              </v-btn>
+              <v-btn
+                v-if="button.type === 'CALL'"
+                :href="'tel:' + button.value"
+                icon
+              >
+                <v-icon left>mdi-phone</v-icon>
+                {{ button.text }}
+              </v-btn>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      template: {
+        name: '',
+        language: 'en_US',
+        category: 'MARKETING',
+        header: { text: '', file: null, url: '' },
+        body: { text: '' },
+        footer: { text: '' },
+        buttons: [],
+      },
+      headerTab: 0,
+      languages: ['en_US', 'ar_SA'],
+      buttonTypes: ['URL', 'CALL'],
+      headerOptions: [
+        { label: 'None', icon: 'mdi-close' },
+        { label: 'Text', icon: 'mdi-format-text' },
+        { label: 'Image', icon: 'mdi-image' },
+      ],
+    };
+  },
+  methods: {
+    onImageSelected(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        this.template.header.file = file;
+        this.template.header.url = URL.createObjectURL(file); // Preview the image
+      } else {
+        console.warn("Please upload a valid image file.");
+      }
+    },
+    addButton() {
+      this.template.buttons.push({ type: 'URL', text: '', value: '' });
+    },
+    removeButton(index) {
+      this.template.buttons.splice(index, 1); // Remove button at specified index
+    },
+  },
+};
+</script>
+
+<style scoped>
+.preview {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+</style>

@@ -1,0 +1,41 @@
+{
+  "language": "en_US",
+  "name": "template_name",
+  "category": "MARKETING",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "IMAGE",
+      "value": {
+        "url": "https://example.com/image.jpg"
+      }
+    },
+    {
+      "type": "BODY",
+      "text": "Welcome to our service!"
+    },
+    {
+      "type": "FOOTER",
+      "text": "Terms and conditions apply."
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "URL",
+          "text": "Visit our site",
+          "value": {
+            "url": "https://arabot.io"
+          }
+        },
+        {
+          "type": "CALL",
+          "text": "Contact Us",
+          "value": {
+            "phone_number": "+96279XXXXXXX"
+          }
+        }
+      ]
+    }
+  ]
+}
