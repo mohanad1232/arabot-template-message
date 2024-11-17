@@ -1,2 +1,24 @@
-# arabot-template-message
-Vue.js, HTML, and CSS to create a template message tool. The app should allow users to create and preview customizable template messages with sectons like header, body, footer.
+# template-message-app
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
